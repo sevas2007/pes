@@ -109,22 +109,34 @@ async def handle_message(message: types.Message):
         user_histories[user_id].append({"role": "assistant", "content": reply_text})
         
         category = None
-        # Приводим все ключи к нижнему регистру для сравнения
+        # Ищем метку, не меняя регистр самого текста для пользователя, 
+        # но сравнивая всё в нижнем регистре
+        lower_reply = reply_text.lower()
+        
         for cat in shiba_stickers.keys():
-            # Ищем без учета пробелов и регистра
             tag = f"[STICKER: {cat.lower()}]"
-            if tag in reply_text.lower():
+            tag_with_space = f"[STICKER: {cat.lower()} ]"
+            
+            if tag in lower_reply or tag_with_space in lower_reply:
                 category = cat
-                # Удаляем метку из текста (с учетом возможного пробела после)
-                reply_text = reply_text.replace(tag, "").strip()
-                # Удаляем еще и вариант с пробелом, если ИИ его добавил
-                reply_text = reply_text.replace(f"[STICKER: {cat.lower()} ]", "").strip()
+                # Удаляем метку из ОРИГИНАЛЬНОГО текста, используя case-insensitive поиск
+                # Чтобы удалить метку в любом регистре, используем re (регулярные выражения)
+                import re
+                pattern = re.compile(re.escape(tag), re.IGNORECASE)
+                reply_text = pattern.sub("", reply_text)
+                
+                pattern_space = re.compile(re.escape(tag_with_space), re.IGNORECASE)
+                reply_text = pattern_space.sub("", reply_text)
+                
+                reply_text = reply_text.strip()
                 print(f"DEBUG: Нашел категорию: {category}")
                 break
 
+        # 1. Отправляем очищенный текст
         if reply_text:
             await message.reply(reply_text)
-
+        
+        # 2. Отправляем стикер
         sticker_to_send = get_sticker(category)
         if sticker_to_send:
             await message.answer_sticker(sticker_to_send)
