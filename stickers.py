@@ -110,11 +110,13 @@ ALL_SHIBA_STICKERS = ['CAACAgIAAxUAAWpREceNE_7yyYgC_MvIzbfwbj-oAAKEkAACSuq4STfs1
 all_stickers = [s for sublist in shiba_stickers.values() for s in sublist]
 
 def get_sticker(category=None):
-    # ВАРИАНТ 1: Если категория ЕСТЬ (бот понял тему)
+    # 1. Если передана категория (60% шанс на тематический стикер)
     if category and category in shiba_stickers:
-        # 60% шанс выдать стикер строго по этой теме
         if random.random() < 0.60:
             return random.choice(shiba_stickers[category])
+    
+    # 2. Спонтанный стикер (5% шанс)
     if random.random() < 0.05:
         return random.choice(all_stickers)
+    
     return None
