@@ -103,26 +103,28 @@ async def handle_message(message: types.Message):
         user_histories[user_id].append({"role": "assistant", "content": reply_text})
         
         # --- НОВАЯ ЛОГИКА СТИКЕРОВ ---
+       # 1. Поиск категории
         category = None
-        # Ищем метку категории в ответе ИИ
         for cat in shiba_stickers.keys():
-            if f"[STICKER: {cat}]" in reply_text:
+            tag = f"[STICKER: {cat}]"
+            if tag in reply_text:
                 category = cat
-                # Вырезаем метку из текста, чтобы пользователь её не видел
-                reply_text = reply_text.replace(f"[STICKER: {cat}]", "").strip()
+                # Вырезаем метку из текста
+                reply_text = reply_text.replace(tag, "").strip()
                 break
         
-        # 1. Отправляем текст (если он остался после вырезания метки)
+        # 2. Отправляем текст (если он не пустой)
+        # Если ИИ прислал только метку, текст будет пустым, тогда просто пропускаем
         if reply_text:
             await message.reply(reply_text)
         
-        # 2. Получаем стикер через нашу функцию
-        # Она сама решит: отправить 60% по теме, 5% случайно или вернуть None
+        # 3. Отправляем стикер
+        # Вызываем функцию отдельно, она сама вернет стикер (или None)
         sticker_to_send = get_sticker(category)
         
-        # 3. Отправляем, только если функция вернула ID стикера
         if sticker_to_send:
             await message.answer_sticker(sticker_to_send)
+        
         # -----------------------------
         
     except Exception as e:
