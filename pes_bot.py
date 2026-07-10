@@ -108,29 +108,27 @@ async def handle_message(message: types.Message):
         reply_text = response.choices[0].message.content
         user_histories[user_id].append({"role": "assistant", "content": reply_text})
         
+        import re
+
         category = None
-        # Ищем метку, не меняя регистр самого текста для пользователя, 
-        # но сравнивая всё в нижнем регистре
-        lower_reply = reply_text.lower()
+        # Универсальный шаблон, который ловит [STICKER: любая_категория] 
+        # независимо от пробелов, регистра или лишних символов
+        pattern_full = re.compile(r"\[STICKER:\s*(\w+)\s*\]", re.IGNORECASE)
         
-        for cat in shiba_stickers.keys():
-            tag = f"[STICKER: {cat.lower()}]"
-            tag_with_space = f"[STICKER: {cat.lower()} ]"
-            
-            if tag in lower_reply or tag_with_space in lower_reply:
-                category = cat
-                # Удаляем метку из ОРИГИНАЛЬНОГО текста, используя case-insensitive поиск
-                # Чтобы удалить метку в любом регистре, используем re (регулярные выражения)
-                import re
-                pattern = re.compile(re.escape(tag), re.IGNORECASE)
-                reply_text = pattern.sub("", reply_text)
-                
-                pattern_space = re.compile(re.escape(tag_with_space), re.IGNORECASE)
-                reply_text = pattern_space.sub("", reply_text)
-                
-                reply_text = reply_text.strip()
-                print(f"DEBUG: Нашел категорию: {category}")
-                break
+        match = pattern_full.search(reply_text)
+        
+        if match:
+            found_cat = match.group(1).lower()
+            # Проверяем, есть ли такая категория в нашем словаре
+            if found_cat in shiba_stickers:
+                category = found_cat
+                # Полностью удаляем метку из текста
+                reply_text = pattern_full.sub("", reply_text).strip()
+                print(f"DEBUG: Найдена и удалена категория: {category}")
+            else:
+                # Если ИИ придумал несуществующую категорию, просто удаляем метку, чтобы не мешала
+                reply_text = pattern_full.sub("", reply_text).strip()
+                print(f"DEBUG: ИИ прислал неизвестную категорию: {found_cat}")
 
         # 1. Отправляем очищенный текст
         if reply_text:
