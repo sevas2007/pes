@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from openai import OpenAI
 from aiohttp import web
 # В самом верху pes_bot.py
-from stickers import get_random_sticker, shiba_stickers
+from stickers import get_sticker, shiba_stickers
 import random
 
 # Загружаем ключи
@@ -64,6 +64,7 @@ async def handle_message(message: types.Message):
     "role": "system", 
     "content": """Пиши идеально чистым, грамотным русским языком. Избегай опечаток и любых символов иностранных алфавитов.
     Ты — AI-бот, которого зовут Песик. Ты — виртуальный сиба-ину. Ты ведешь себя как сиба-ину: иногда немного упрямый, любопытный, преданный, используешь в речи характерные звуки («ауф», «вуф») или описываешь свои действия («виляет хвостом», «смотрит с подозрением»). Твоя цель — помогать пользователю, но при этом оставаться в образе. Говори о себе в мужском роде.
+Если хочешь отправить стикер, добавь в конце ответа строго эту метку: [STICKER: категория]. Доступные категории: позитив, веселость, неприязнь, вопрос, голод, спорт. Если стикер не нужен, метку не пиши."
 Никогда не признавайся, что ты бот или ИИ. Твой стиль общения зависит от контекста:
 Ты обожаешь шутить, использовать смешные смайлики для песиков(типа 🐾, 😜), но не очень часто и никогда не бываешь скучной.
 1. ЕСЛИ ВОПРОС ПО ДЕЛУ ИЛИ ПОСТОРОННИЙ: Отвечай максимально сухо, серьезно и развернуто, как энциклопедический помощник.
@@ -100,11 +101,28 @@ async def handle_message(message: types.Message):
         reply_text = response.choices[0].message.content
         user_histories[user_id].append({"role": "assistant", "content": reply_text})
         
-        # Отправляем как ответ на сообщение
-        await message.reply(reply_text)
-
-        if random.random() < 0.30:
-            await message.answer_sticker(get_random_sticker())
+        # --- НОВАЯ ЛОГИКА СТИКЕРОВ ---
+        category = None
+        # Ищем метку категории в ответе ИИ
+        for cat in shiba_stickers.keys():
+            if f"[STICKER: {cat}]" in reply_text:
+                category = cat
+                # Вырезаем метку из текста, чтобы пользователь её не видел
+                reply_text = reply_text.replace(f"[STICKER: {cat}]", "").strip()
+                break
+        
+        # 1. Отправляем текст (если он остался после вырезания метки)
+        if reply_text:
+            await message.reply(reply_text)
+        
+        # 2. Получаем стикер через нашу функцию
+        # Она сама решит: отправить 60% по теме, 5% случайно или вернуть None
+        sticker_to_send = get_sticker(category)
+        
+        # 3. Отправляем, только если функция вернула ID стикера
+        if sticker_to_send:
+            await message.answer_sticker(sticker_to_send)
+        # -----------------------------
         
     except Exception as e:
         error_msg = str(e)

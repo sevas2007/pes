@@ -1,5 +1,46 @@
 import random
-shiba_stickers = ['CAACAgIAAxUAAWpREceNE_7yyYgC_MvIzbfwbj-oAAKEkAACSuq4STfs1n8BCFmgPAQ', 
+shiba_stickers = {
+    "позитив": [
+        "CAACAgIAAxUAAWpREceMe24Gt1JIzGDHPfluCLNRAAITkwACV1-oSZ-A7gbByCP8PAQ",
+        "CAACAgIAAxUAAWpREcfgA9CEI_XWT8HO8sbqCnhgAAJJnAACAna4SiYyvl56xHzsPAQ",
+        "CAACAgIAAxUAAWpREcfoNbd34SvILTQjfwkfrTGDAAK6rAACTqhxS0IClAHsqvbwPAQ",
+        "CAACAgIAAxUAAWpREce-NkIf18mPj4Vj8seXhn_0AAKyowACsjyhS3zTNPi5GUhrPAQ",
+        "CAACAgIAAxUAAWpREcdTQmb7jL5290NB542ETgmxAAIimQACuLB4SgYPgmRwpp9kPAQ",
+        "CAACAgIAAxUAAWpREceJ5gKE969fWcB7_K9xkn-BAAIVmgACEKZhSqpnyb0LPQLBPAQ",
+        "CAACAgIAAxUAAWpREceLCKoGVjwdXs_M9KH0TIO0AALBkgACm7wxSjRMsP9zI88OPAQ",
+        "CAACAgIAAxUAAWpREcdEeE3aHBiXk2OHhLIpe1UEAALEqQACULhoSDci5qQ6HwaNPAQ",
+        "CAACAgIAAxUAAWpREccCJJyH_hBwX8RPKIK7jspLAAJakgAC3pxxSwLES_WBgcifPAQ",
+        "CAACAgIAAxUAAWpREcdqf9ZFigQcRy5vrvFsdl-NAAK4nAACufkJSZVET0482YyCPAQ",
+        "CAACAgIAAxUAAWpREceo4cWw9x3xJ6bJ7Q6hK0cAAK7mQACjyJISwGzK6z3b1rQPAQ"
+    ],
+    "веселость": [
+        "CAACAgIAAxUAAWpREccb3s7Qx1hJz8b4k6wW7f9qAAJ4mwAC7xZJSYj7x4Jjv3ZrPAQ",
+        "CAACAgIAAxUAAWpREcebZctoqRlVU9aNoHiB_tsGAAK8kAACL764Sem75mLi8oElPAQ",
+        "CAACAgIAAxUAAWpREcexpZgeFKvJYG_w6KNNDtPIAAIpmwAC0RxYStxMIEtBsEmFPAQ",
+        "CAACAgIAAxUAAWpREccQv7z2u3xQy7W4lP6kQ3gAAJ4ngAC0hQ5Sy9p4jZ9cZkqPAQ"
+    ],
+    "неприязнь": [
+        "CAACAgIAAxUAAWpREcedQRZCvuPeX0CbWL4_YpoLAAJnhwACJq9RSlYDgMTeZ3NaPAQ",
+        "CAACAgIAAxUAAWpREceQayTvQ-IeKCuR_aus371yAALMmQACKqHISX82IqDyQvVtPAQ",
+        "CAACAgIAAxUAAWpREcdky-IVKyp2kAgLB5OYNP6HAALdngAClpXZSbn7xU_LkuaYPAQ"
+    ],
+    "вопрос": [
+        "CAACAgIAAxUAAWpREceH_d61B6wuzY02Q8nhstrJAAJ0oAACKuyoSVHzbmH1qbqEPAQ",
+        "CAACAgIAAxUAAWpREceLCKoGVjwdXs_M9KH0TIO0AALBkgACm7wxSjRMsP9zI88OPAQ",
+        "CAACAgIAAxUAAWpREceNSkdBXDyTKIW6FVADO-kxAAKMmQACN2a5SSUuztIdxcnAPAQ",
+        "CAACAgIAAxUAAWpREccSH1DuE6zDKg0oeT5rBmYJAAJ0kgACdZixSdVFEXGJ7qvCPAQ"
+    ],
+    "голод": [
+        "CAACAgIAAxUAAWpREcdajmKhDXbtBXsXd9N6VU6uAAK2nwACkRC5Skj6kya5o57BPAQ"
+    ],
+    "спорт": [
+        "CAACAgIAAxUAAWpREceH_d61B6wuzY02Q8nhstrJAAJ0oAACKuyoSVHzbmH1qbqEPAQ",
+        "CAACAgIAAxUAAWpREcetfNXa9yIXYjjvLO1fymQ5AALnmwACtmvISeR_DJO97ZidPAQ",
+        "CAACAgIAAxUAAWpREcdmEcaGUPmdOdJKy8WJWrHJAAJXngACbUzgSQes_eDNQQQ6PAQ",
+        "CAACAgIAAxUAAWpREcfGrRJD7YRnhzuZzHTmgbeOAAJFoAACBmkQSOul6t77136qPAQ"
+    ]
+}
+ALL_SHIBA_STICKERS = ['CAACAgIAAxUAAWpREceNE_7yyYgC_MvIzbfwbj-oAAKEkAACSuq4STfs1n8BCFmgPAQ', 
                   'CAACAgIAAxUAAWpREcedQRZCvuPeX0CbWL4_YpoLAAJnhwACJq9RSlYDgMTeZ3NaPAQ', 
                   'CAACAgIAAxUAAWpREceH_d61B6wuzY02Q8nhstrJAAJ0oAACKuyoSVHzbmH1qbqEPAQ', 
                   'CAACAgIAAxUAAWpREccmUAbTn47sPYq2JqysLqGnAALumgACSGmoSb8WgCtGUHlPPAQ', 
@@ -63,6 +104,17 @@ shiba_stickers = ['CAACAgIAAxUAAWpREceNE_7yyYgC_MvIzbfwbj-oAAKEkAACSuq4STfs1n8BC
                   'CAACAgIAAxUAAWpREcfB-oOTEk7LiVPCPyYVBVHDAAJanwACgIvxSTLLaOBaZ2nqPAQ', 
                   'CAACAgIAAxUAAWpREceuWBXp-cFHTrJJrbI4LxJBAAIPpwACnSr4SXVnC5yXVGKrPAQ', 
                   'CAACAgIAAxUAAWpREcdqrUA0_gxVSl8EiiL9dDJ-AAIPowACDB2ASl13k3Tj63YMPAQ', 
-                  'CAACAgIAAxUAAWpREceUKVflJW4KITlQWx79k2auAAJpoQACu9GJSqG_GJEaQxVePAQ']
-def get_random_sticker():
-    return random.choice(shiba_stickers)
+                  'CAACAgIAAxUAAWpREceUKVflJW4KITlQWx79k2auAAJpoQACu9GJSqG_GJEaQxVePAQ'
+]
+
+all_stickers = [s for sublist in shiba_stickers.values() for s in sublist]
+
+def get_sticker(category=None):
+    # ВАРИАНТ 1: Если категория ЕСТЬ (бот понял тему)
+    if category and category in shiba_stickers:
+        # 60% шанс выдать стикер строго по этой теме
+        if random.random() < 0.60:
+            return random.choice(shiba_stickers[category])
+    if random.random() < 0.05:
+        return random.choice(all_stickers)
+    return None
