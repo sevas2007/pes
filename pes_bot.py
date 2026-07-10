@@ -104,25 +104,27 @@ async def handle_message(message: types.Message):
         user_histories[user_id].append({"role": "assistant", "content": reply_text})
         
         category = None
-        # Ищем метку категории в ответе ИИ
+        # Приводим все ключи к нижнему регистру для сравнения
         for cat in shiba_stickers.keys():
-            tag = f"[STICKER: {cat}]"
-            if tag in reply_text:
+            # Ищем без учета пробелов и регистра
+            tag = f"[STICKER: {cat.lower()}]"
+            if tag in reply_text.lower():
                 category = cat
+                # Удаляем метку из текста (с учетом возможного пробела после)
                 reply_text = reply_text.replace(tag, "").strip()
-                print(f"DEBUG: Найдена категория: {category}") # ТЕСТ: видно в консоли
+                # Удаляем еще и вариант с пробелом, если ИИ его добавил
+                reply_text = reply_text.replace(f"[STICKER: {cat.lower()} ]", "").strip()
+                print(f"DEBUG: Нашел категорию: {category}")
                 break
-        
-        # 1. Сначала шлем стикер, если он есть (так красивее в чате)
+
+        if reply_text:
+            await message.reply(reply_text)
+
         sticker_to_send = get_sticker(category)
         if sticker_to_send:
             await message.answer_sticker(sticker_to_send)
         else:
             print(f"DEBUG: Стикер не отправлен (категория: {category})")
-
-        # 2. Потом шлем текст
-        if reply_text:
-            await message.reply(reply_text)
 
     except Exception as e:
         error_msg = str(e)
