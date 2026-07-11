@@ -45,6 +45,7 @@ async def start_web_server():
 
 @dp.message()
 async def handle_message(message: types.Message):
+    import re
     if not message.text: return
     
     # 1. Логика "умного" ответа
