@@ -11,6 +11,7 @@ from aiohttp import web
 # В самом верху pes_bot.py
 from stickers import get_sticker, bad_sticker_ids, shiba_stickers, ALL_SHIBA_STICKERS
 import random
+import re
 
 # Загружаем ключи
 env_path = Path(__file__).resolve().parent / '.env'
