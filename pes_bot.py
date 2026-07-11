@@ -1,13 +1,15 @@
 import asyncio
+from email.mime import message
 import os
 from pathlib import Path
+from unicodedata import category
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from openai import OpenAI
 from aiohttp import web
 # В самом верху pes_bot.py
-from stickers import get_sticker, shiba_stickers
+from stickers import get_sticker, bad_sticker_ids, shiba_stickers, ALL_SHIBA_STICKERS
 import random
 
 # Загружаем ключи
@@ -111,35 +113,42 @@ async def handle_message(message: types.Message):
         import re
 
         category = None
-        # Универсальный шаблон, который ловит [STICKER: любая_категория] 
-        # независимо от пробелов, регистра или лишних символов
         pattern_full = re.compile(r"\[(СТИКЕР|STICKER):\s*(\w+)\s*\]", re.IGNORECASE)
-        
+
         match = pattern_full.search(reply_text)
-        
+
         if match:
             found_cat = match.group(2).lower()
-            # Проверяем, есть ли такая категория в нашем словаре
+            # Проверяем, есть ли такая категория в словаре
             if found_cat in shiba_stickers:
                 category = found_cat
-                # Полностью удаляем метку из текста
+                # Удаляем метку из текста
                 reply_text = pattern_full.sub("", reply_text).strip()
                 print(f"DEBUG: Найдена и удалена категория: {category}")
             else:
-                # Если ИИ придумал несуществующую категорию, просто удаляем метку, чтобы не мешала
+                # Если ИИ придумал несуществующую категорию
                 reply_text = pattern_full.sub("", reply_text).strip()
                 print(f"DEBUG: ИИ прислал неизвестную категорию: {found_cat}")
 
-        # 1. Отправляем очищенный текст
+        # 2. Отправляем очищенный текст
         if reply_text:
             await message.reply(reply_text)
-        
-        # 2. Отправляем стикер
+
+        # 3. Отправляем стикер с защитой от ошибок
         sticker_to_send = get_sticker(category)
+
         if sticker_to_send:
-            await message.answer_sticker(sticker_to_send)
-        else:
-            print(f"DEBUG: Стикер не отправлен (категория: {category})")
+            try:
+                await message.answer_sticker(sticker_to_send)
+            except Exception as e:
+        # Если стикер "битый" или Telegram вернул ошибку
+                print(f"DEBUG: Ошибка отправки стикера {sticker_to_send}: {e}")
+        # Добавляем в черный список (убедись, что bad_sticker_ids импортирован)
+                bad_sticker_ids.add(sticker_to_send)
+                print("DEBUG: Стикер добавлен в черный список и пропущен.")
+            else:
+        # Случай, когда стикер не выпал по шансам (60% или 5%) или список пуст
+                print(f"DEBUG: Стикер не отправлен (категория: {category})")
 
     except Exception as e:
         error_msg = str(e)

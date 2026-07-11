@@ -1,4 +1,5 @@
 import random
+bad_sticker_ids = set()
 shiba_stickers = {
     "позитив": [
         "CAACAgIAAxUAAWpREceMe24Gt1JIzGDHPfluCLNRAAITkwACV1-oSZ-A7gbByCP8PAQ",
@@ -109,14 +110,29 @@ ALL_SHIBA_STICKERS = ['CAACAgIAAxUAAWpREceNE_7yyYgC_MvIzbfwbj-oAAKEkAACSuq4STfs1
 
 all_stickers = [s for sublist in shiba_stickers.values() for s in sublist]
 
+import random
+
 def get_sticker(category=None):
-    # 1. Если передана категория (60% шанс на тематический стикер)
-    if category and category in shiba_stickers:
+    def get_safe_choice(items):
+        # Перемешиваем, чтобы каждый раз был разный выбор
+        shuffled = list(items)
+        random.shuffle(shuffled)
+        
+        for candidate in shuffled:
+            clean_id = candidate.strip()
+            # Пропускаем, если ID в черном списке
+            if clean_id in bad_sticker_ids:
+                continue
+            # Базовая проверка длины
+            if len(clean_id) > 20:
+                return clean_id
+        return None
+
+    if category and category in shiba_stickers and shiba_stickers[category]:
         if random.random() < 0.60:
-            return random.choice(shiba_stickers[category])
-    
-    # 2. Спонтанный стикер (5% шанс)
-    if random.random() < 0.05:
-        return random.choice(all_stickers)
-    
+            return get_safe_choice(shiba_stickers[category])
+            
+    if 'all_stickers' in globals() and all_stickers and random.random() < 0.05:
+        return get_safe_choice(all_stickers)
+        
     return None
