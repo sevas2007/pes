@@ -118,7 +118,7 @@ async def handle_message(message: types.Message):
         match = pattern_full.search(reply_text)
         
         if match:
-            found_cat = match.group(1).lower()
+            found_cat = match.group(2).lower()
             # Проверяем, есть ли такая категория в нашем словаре
             if found_cat in shiba_stickers:
                 category = found_cat
