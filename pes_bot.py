@@ -53,6 +53,7 @@ async def handle_message(message: types.Message):
     # Бот реагирует, если: упоминают имя, тегают бота или отвечают на его сообщение
     is_addressed = (
         "песик" in message.text.lower() or 
+        "пёсик" in message.text.lower() or 
         bot_username in message.text or 
         (message.reply_to_message and message.reply_to_message.from_user.id == me.id)
     )
