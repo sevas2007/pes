@@ -147,9 +147,9 @@ async def handle_message(message: types.Message):
         # Добавляем в черный список (убедись, что bad_sticker_ids импортирован)
                 bad_sticker_ids.add(sticker_to_send)
                 print("DEBUG: Стикер добавлен в черный список и пропущен.")
-            else:
+        else:
         # Случай, когда стикер не выпал по шансам (60% или 5%) или список пуст
-                print(f"DEBUG: Стикер не отправлен (категория: {category})")
+            print(f"DEBUG: Стикер не отправлен (категория: {category})")
 
     except Exception as e:
         error_msg = str(e)
