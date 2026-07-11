@@ -113,7 +113,7 @@ async def handle_message(message: types.Message):
         import re
 
         category = None
-        pattern_full = re.compile(r"\[(СТИКЕР|STICKER):\s*(\w+)\s*\]", re.IGNORECASE)
+        pattern_full = re.compile(r"\[(?:СТИКЕР|STICKER)?\s*:?\s*(\w+)\]", re.IGNORECASE)
 
         match = pattern_full.search(reply_text)
 
