@@ -113,7 +113,7 @@ async def handle_message(message: types.Message):
         category = None
         # Универсальный шаблон, который ловит [STICKER: любая_категория] 
         # независимо от пробелов, регистра или лишних символов
-        pattern_full = re.compile(r"\[STICKER:\s*(\w+)\s*\]", re.IGNORECASE)
+        pattern_full = re.compile(r"\[(СТИКЕР|STICKER):\s*(\w+)\s*\]", re.IGNORECASE)
         
         match = pattern_full.search(reply_text)
         
